@@ -10,6 +10,7 @@ import interviewRouter from "./routes/interview.routes.js";
 import paymentRouter from "./routes/payment.routes.js"
 
 const app = express() 
+console.log("CLIENT_URL =", process.env.CLIENT_URL)
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
