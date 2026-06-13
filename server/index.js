@@ -14,6 +14,12 @@ app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
 }))
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "AI Interview Agent API Running"
+  });
+});
 
 app.use(express.json())
 app.use(cookieParser())
