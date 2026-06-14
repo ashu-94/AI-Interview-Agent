@@ -31,6 +31,7 @@ function Step2Interview({ interviewData, onFinish }) {
   const isAISpeakingRef = useRef(isAISpeaking); // ✅ ref so startMic guard works correctly
   const introCompletedRef = useRef(false);
   const isSubmittingRef = useRef(false);
+  const autoSubmittedRef = useRef(false);
 
   // keep refs in sync
   useEffect(() => {
@@ -303,12 +304,11 @@ function Step2Interview({ interviewData, onFinish }) {
   useEffect(() => {
     if (isIntroPhase) return;
     if (!currentQuestion) return;
-    // ✅ FIX: was calling handleSubmit() which doesn't exist
-    if (timeleft === 0 && !isSubmitting && !feedback) {
+    if (timeleft === 0 && !isSubmitting && !feedback && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true;
       submitAnswer();
     }
   }, [timeleft]);
-
   // ── Cleanup on unmount ─────────────────────────────────────────
   useEffect(() => {
     return () => {
@@ -320,11 +320,15 @@ function Step2Interview({ interviewData, onFinish }) {
     };
   }, []);
 
-  // ── Submit answer ──────────────────────────────────────────────
   const submitAnswer = async () => {
     if (isSubmitting) return;
     stopMic();
     setIsSubmitting(true);
+
+    const safetyTimeout = setTimeout(() => {
+      setFeedback("Time's up! Moving to next question.");
+      setIsSubmitting(false);
+    }, 15000);
 
     try {
       const token = localStorage.getItem("token")
@@ -340,12 +344,14 @@ function Step2Interview({ interviewData, onFinish }) {
       );
 
       // ✅ FIX: was setAnswer(result.data.feedback) — should store in feedback state
+      clearTimeout(safetyTimeout); 
       setFeedback(result.data.feedback);
       await speakText(result.data.feedback);
       setIsSubmitting(false);
 
     } catch (error) {
       // ✅ show "You did not submit an answer." as feedback on error (matches screenshot)
+      clearTimeout(safetyTimeout); 
       setFeedback(error.response?.data?.message || "You did not submit an answer.");
       setIsSubmitting(false);
     }
@@ -353,19 +359,15 @@ function Step2Interview({ interviewData, onFinish }) {
 
   // ── Next question ──────────────────────────────────────────────
   const handleNext = async () => {
-
     setAnswer("");
     setFeedback("");
+    autoSubmittedRef.current = false;  // ← ADD THIS LINE ONLY
 
     if (currentIndex + 1 >= questions.length) {
       finishInterview();
       return;
     }
-
-    //const nextQuestion = questions[currentIndex + 1];
-
     setCurrentIndex(currentIndex + 1);
-
   };
 
   // ── Finish interview ───────────────────────────────────────────
