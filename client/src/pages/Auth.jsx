@@ -61,14 +61,7 @@ function Auth({ isModel = false }) {
     try {
       const result = await axios.post(
         ServerURL + "/api/auth/register",
-        {
-          name,
-          email,
-          password
-        },
-        {
-          withCredentials: true
-        }
+        { name, email, password }
       );
 
       console.log("Register Success:", result.data);
@@ -96,13 +89,7 @@ function Auth({ isModel = false }) {
     try {
       const result = await axios.post(
         ServerURL + "/api/auth/login",
-        {
-          email,
-          password
-        },
-        {
-          withCredentials: true
-        }
+        { email, password }
       );
 
       console.log("Login Result:", result.data);
@@ -112,7 +99,7 @@ function Auth({ isModel = false }) {
       dispatch(setUserData(result.data.user));
 
       alert("Login Successful!");
-      
+
       navigate("/home");
 
     } catch (error) {

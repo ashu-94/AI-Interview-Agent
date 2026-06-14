@@ -28,11 +28,7 @@ function Navbar() {
 
     try {
 
-      await axios.get(
-        ServerURL + "/api/auth/logout",
-        {},
-        { withCredentials: true }
-      )
+      await axios.get(ServerURL + "/api/auth/logout")
 
       dispatch(setUserData(null))
 
