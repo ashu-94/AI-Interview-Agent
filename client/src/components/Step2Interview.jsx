@@ -12,40 +12,40 @@ function Step2Interview({ interviewData, onFinish }) {
 
   const { interviewId, questions = [], userName } = interviewData || {};
 
-  const [isIntroPhase, setIsIntroPhase]   = useState(true);
-  const [isMicOn, setIsMicOn]             = useState(true);
-  const recognitionRef                    = useRef(null);
-  const [isAISpeaking, setIsAISpeaking]   = useState(true);
-  const [currentIndex, setCurrentIndex]   = useState(0);
-  const [answer, setAnswer]               = useState("");
-  const [feedback, setFeedback]           = useState("");
-  const [timeleft, setTimeLeft]           = useState(questions?.[0]?.timelimit || 90);
+  const [isIntroPhase, setIsIntroPhase] = useState(true);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const recognitionRef = useRef(null);
+  const [isAISpeaking, setIsAISpeaking] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answer, setAnswer] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [timeleft, setTimeLeft] = useState(questions?.[0]?.timelimit || 90);
   const [selectedVoice, setSelectedVoice] = useState(null);
-  const [isSubmitting, setIsSubmitting]   = useState(false);
-  const [voiceGender, setVoiceGender]     = useState("female");
-  const [subtitle, setSubtitle]           = useState("");
-  const [showQuestion, setShowQuestion]   = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [voiceGender, setVoiceGender] = useState("female");
+  const [subtitle, setSubtitle] = useState("");
+  const [showQuestion, setShowQuestion] = useState(false);
 
-  const videoRef        = useRef(null);
-  const isMicOnRef      = useRef(isMicOn);       // ✅ ref so callbacks always see latest value
+  const videoRef = useRef(null);
+  const isMicOnRef = useRef(isMicOn);       // ✅ ref so callbacks always see latest value
   const isAISpeakingRef = useRef(isAISpeaking); // ✅ ref so startMic guard works correctly
   const introCompletedRef = useRef(false);
   const isSubmittingRef = useRef(false);
 
   // keep refs in sync
-  useEffect(() => { 
-    isMicOnRef.current = isMicOn; 
-  },        
-   [isMicOn]);
+  useEffect(() => {
+    isMicOnRef.current = isMicOn;
+  },
+    [isMicOn]);
 
   useEffect(() => {
-     isAISpeakingRef.current = isAISpeaking; 
-    },[isAISpeaking]);
+    isAISpeakingRef.current = isAISpeaking;
+  }, [isAISpeaking]);
 
 
-    useEffect(() => {
-  isSubmittingRef.current = isSubmitting;
-}, [isSubmitting]);
+  useEffect(() => {
+    isSubmittingRef.current = isSubmitting;
+  }, [isSubmitting]);
 
 
   const currentQuestion = questions?.[currentIndex];
@@ -53,9 +53,9 @@ function Step2Interview({ interviewData, onFinish }) {
 
     if (!currentQuestion) return;
 
-  setTimeLeft(currentQuestion.timelimit || 90);
+    setTimeLeft(currentQuestion.timelimit || 90);
 
-}, [currentIndex]);
+  }, [currentIndex]);
 
   if (!questions || questions.length === 0) {
     return (
@@ -96,28 +96,28 @@ function Step2Interview({ interviewData, onFinish }) {
   const videoSrc = voiceGender === "female" ? femaleVideo : maleVideo;
 
   // ── Mic helpers ────────────────────────────────────────────────
-   const startMic = () => {
+  const startMic = () => {
 
-  console.log("AI SPEAKING:", isAISpeakingRef.current);
-  console.log("MIC REF:", recognitionRef.current);
+    console.log("AI SPEAKING:", isAISpeakingRef.current);
+    console.log("MIC REF:", recognitionRef.current);
 
-  if (recognitionRef.current && !isAISpeakingRef.current) {
+    if (recognitionRef.current && !isAISpeakingRef.current) {
 
-    console.log("STARTING MICROPHONE...");
+      console.log("STARTING MICROPHONE...");
 
-    try {
-      recognitionRef.current.start();
-    } catch (error) {
-      console.log("MIC START ERROR:", error);
+      try {
+        recognitionRef.current.start();
+      } catch (error) {
+        console.log("MIC START ERROR:", error);
+      }
+    } else {
+
+      console.log("MIC BLOCKED");
     }
-  } else {
-
-    console.log("MIC BLOCKED");
-  }
-};
+  };
   const stopMic = () => {
     if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch {}
+      try { recognitionRef.current.stop(); } catch { }
     }
   };
 
@@ -139,9 +139,9 @@ function Step2Interview({ interviewData, onFinish }) {
 
     const humanText = text.replace(/,/g, ", ...").replace(/\./g, ". ...");
     const utterance = new SpeechSynthesisUtterance(humanText);
-    utterance.voice  = selectedVoice;
-    utterance.rate   = 0.92;
-    utterance.pitch  = 1;
+    utterance.voice = selectedVoice;
+    utterance.rate = 0.92;
+    utterance.pitch = 1;
     utterance.volume = 1;
 
     utterance.onstart = () => {
@@ -174,10 +174,10 @@ function Step2Interview({ interviewData, onFinish }) {
   // ── Interview flow ─────────────────────────────────────────────
   useEffect(() => {
     console.log(
-  "INTERVIEW EFFECT",
-  "isIntroPhase=", isIntroPhase,
-  "currentIndex=", currentIndex
-);
+      "INTERVIEW EFFECT",
+      "isIntroPhase=", isIntroPhase,
+      "currentIndex=", currentIndex
+    );
     if (!selectedVoice) return;
 
 
@@ -211,7 +211,7 @@ function Step2Interview({ interviewData, onFinish }) {
 
     runIntro();
 
-  // ✅ FIX: removed currentQuestion/questions/userName from deps to prevent infinite re-runs
+    // ✅ FIX: removed currentQuestion/questions/userName from deps to prevent infinite re-runs
   }, [selectedVoice, isIntroPhase, currentIndex]);
 
   // ── Countdown timer ────────────────────────────────────────────
@@ -219,58 +219,58 @@ function Step2Interview({ interviewData, onFinish }) {
     if (isIntroPhase) return;
     if (!currentQuestion) return;
     if (isSubmitting) return;
-    if(isAISpeaking)return;
+    if (isAISpeaking) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1){
-           clearInterval(timer); 
-           return 0;
-           }
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer); // ✅ FIX: was inside setInterval callback before
 
-  }, [isIntroPhase, currentIndex, isSubmitting,isAISpeaking]);
+  }, [isIntroPhase, currentIndex, isSubmitting, isAISpeaking]);
 
   // ── Speech recognition setup ───────────────────────────────────
   useEffect(() => {
-    
-   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-if(!SpeechRecognition){
-   alert("Speech Recognition Not Supported");
-   return;
-}
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-const recognition = new SpeechRecognition();
-recognition.onstart = () => {
-  console.log("MIC STARTED");
-};
+    if (!SpeechRecognition) {
+      alert("Speech Recognition Not Supported");
+      return;
+    }
 
-recognition.onend = () => {
-  console.log("MIC ENDED");
-};
+    const recognition = new SpeechRecognition();
+    recognition.onstart = () => {
+      console.log("MIC STARTED");
+    };
 
-recognition.onerror = (event) => {
-  console.log("MIC ERROR:", event.error);
+    recognition.onend = () => {
+      console.log("MIC ENDED");
+    };
 
-   if (
-      event.error === "network" ||
-      event.error === "not-allowed"
-  ){
-      setIsMicOn(false);
+    recognition.onerror = (event) => {
+      console.log("MIC ERROR:", event.error);
 
-      try{
-        recognition.stop();
-      }catch{}
-  }
-};
-    recognition.lang  = "en-US";
+      if (
+        event.error === "network" ||
+        event.error === "not-allowed"
+      ) {
+        setIsMicOn(false);
+
+        try {
+          recognition.stop();
+        } catch { }
+      }
+    };
+    recognition.lang = "en-US";
     recognition.continuous = true;
-    recognition.interimResults= false;
+    recognition.interimResults = false;
 
     recognition.onresult = (event) => {
       const transcript = event.results[event.results.length - 1][0].transcript;
@@ -280,22 +280,21 @@ recognition.onerror = (event) => {
     // auto-restart recognition if it stops unexpectedly while mic should be on
     recognition.onend = () => {
 
-  console.log("MIC ENDED");
+      console.log("MIC ENDED");
 
-  if (isMicOnRef.current && 
-    !isAISpeakingRef.current &&
-      !isSubmittingRef.current)
-       {
+      if (isMicOnRef.current &&
+        !isAISpeakingRef.current &&
+        !isSubmittingRef.current) {
 
-    console.log("RESTARTING MIC");
+        console.log("RESTARTING MIC");
 
-    try {
-      recognition.start();
-    } catch(error){
-      console.log("MIC RESTART ERROR", error);
-    }
-  }
-};
+        try {
+          recognition.start();
+        } catch (error) {
+          console.log("MIC RESTART ERROR", error);
+        }
+      }
+    };
 
     recognitionRef.current = recognition;
   }, []);
@@ -314,7 +313,7 @@ recognition.onerror = (event) => {
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch {}
+        try { recognitionRef.current.stop(); } catch { }
         // ✅ FIX: removed .abort() — doesn't exist on webkitSpeechRecognition
       }
       window.speechSynthesis.cancel();
@@ -328,16 +327,16 @@ recognition.onerror = (event) => {
     setIsSubmitting(true);
 
     try {
+      const token = localStorage.getItem("token")
       const result = await axios.post(
-          `${ServerURL}/api/interview/submitAnswer`,
+        `${ServerURL}/api/interview/submitAnswer`,
         {
           interviewId,
           questionIndex: currentIndex,
           answer,
-          // ✅ FIX: was timeLeft (wrong case) — variable is timeleft
           timeTaken: currentQuestion.timelimit - timeleft,
         },
-        { withCredentials: true }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       // ✅ FIX: was setAnswer(result.data.feedback) — should store in feedback state
@@ -366,35 +365,36 @@ recognition.onerror = (event) => {
     //const nextQuestion = questions[currentIndex + 1];
 
     setCurrentIndex(currentIndex + 1);
-    
+
   };
 
   // ── Finish interview ───────────────────────────────────────────
   // ✅ FIX: was "finishInetview" typo in previous versions
   const finishInterview = async () => {
-     console.log("FINISH BUTTON CLICKED");
+    console.log("FINISH BUTTON CLICKED");
     stopMic();
     setIsMicOn(false);
     try {
+      const token = localStorage.getItem("token")
       const result = await axios.post(
-         `${ServerURL}/api/interview/finish`,
+        `${ServerURL}/api/interview/finish`,
         { interviewId },
-        { withCredentials: true }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("FINISH API SUCCESS");
-    console.log(result.data);
+      console.log(result.data);
 
-    onFinish(result.data);
+      onFinish(result.data);
 
     } catch (error) {
-     console.log("FINISH API ERROR");
+      console.log("FINISH API ERROR");
 
-    if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-    } else {
-      console.log(error);
-    }
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -448,9 +448,9 @@ recognition.onerror = (event) => {
 
             <div className="flex justify-center">
               {/* ✅ FIX: was currentQuestion?.timeLeft (wrong key) */}
-              {!feedback &&(
-              <Timer timeLeft={timeleft}
-               totalTime={currentQuestion?.timelimit || 90} />
+              {!feedback && (
+                <Timer timeLeft={timeleft}
+                  totalTime={currentQuestion?.timelimit || 90} />
               )}
             </div>
 

@@ -93,18 +93,17 @@ function Step1SetUp({ onStart }) {
 
       formData.append("resume", uploadedFile);
 
+      const token = localStorage.getItem("token")
       const response = await axios.post(
-          `${ServerURL}/api/interview/resume`,
+        `${ServerURL}/api/interview/resume`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
           },
-
-          withCredentials: true,
         }
       );
-
       console.log(response.data);
 
       setResumeAnalysis(response.data);
@@ -145,7 +144,8 @@ function Step1SetUp({ onStart }) {
     try {
       setLoading(true)
 
-      const result = await axios.post( `${ServerURL}/api/interview/generate-questions`,
+      const token = localStorage.getItem("token")
+      const result = await axios.post(`${ServerURL}/api/interview/generate-questions`,
         {
           role: selectedRole,
           experience: selectedExperience,
@@ -154,7 +154,7 @@ function Step1SetUp({ onStart }) {
           projects: resumeAnalysis?.projects || [],
           skills: resumeAnalysis?.skills || []
         },
-        { withCredentials: true });
+        { headers: { Authorization: `Bearer ${token}` } });
 
       console.log(result.data)
       if (userData) {

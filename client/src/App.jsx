@@ -17,23 +17,27 @@ function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-
     const getUser = async () => {
       try {
+        const token = localStorage.getItem("token")
+
+        if (!token) {
+          dispatch(setUserData(null))
+          return
+        }
 
         const response = await axios.get(
           ServerURL + "/api/user/current-user",
           {
-            withCredentials: true
+            headers: { Authorization: `Bearer ${token}` }
           }
         )
 
         dispatch(setUserData(response.data.user))
 
       } catch (error) {
-
         console.error("Error fetching user data:", error)
-
+        localStorage.removeItem("token")  // clear bad token
         dispatch(setUserData(null))
       }
     }

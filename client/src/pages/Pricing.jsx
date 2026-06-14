@@ -1,4 +1,3 @@
-import { Feature } from 'framer-motion'
 import axios from "axios"
 import React, { useState } from 'react'
 import { FaArrowLeft, FaIdBadge } from 'react-icons/fa'
@@ -12,7 +11,7 @@ import { ServerURL } from "../App";
 function Pricing() {
   const navigate = useNavigate()
   const [selectedPlan, setSelectedPlan] = useState("free");
-  const[loadingPLan,setLoadingPlan] = useState(null);
+  const [loadingPlan, setLoadingPlan] = useState(null);
   const dispatch = useDispatch()
 
   const plans = [
@@ -64,58 +63,60 @@ function Pricing() {
 
 
 
-  const handelPayment = async(plan) =>{
-    try{ 
-      setLoadingPlan(plan.id)
+  const handelPayment = async(plan) => {
+    try {
+      setLoadingPlan (plan.id)
 
       const amount =
-      plan.id === "basic" ? 100:
-      plan.id === "pro" ? 500: 0;
+        plan.id === "basic" ? 100 :
+          plan.id === "pro" ? 500 : 0;
 
-      const result = await axios.post(`${ServerURL}/api/payment/order` ,
+      const token = localStorage.getItem("token")
+      const result = await axios.post(`${ServerURL}/api/payment/order`,
         {
-        planId : plan.id,
-        amount: amount,
-        credits: plan.credits,
-      },
-          {
-            withCredentials: true
+          planId: plan.id,
+          amount: amount,
+          credits: plan.credits,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      console.log(result.data)
 
-          });
-          console.log(result.data)
-
-          const options = {
-            key:import.meta.env.VITE_RAZORPAY_KEY_ID,
-            amount:result.data.amount,
-            currency:"INR",
-            name:"InterviewIQ.AI",
-            description: `${plan.name} - ${plan.credits}Credits`,
-            order_id : result.data.id,
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: result.data.amount,
+        currency: "INR",
+        name: "InterviewIQ.AI",
+        description: `${plan.name} - ${plan.credits}Credits`,
+        order_id: result.data.id,
 
 
-          handler : async function (response) {
-            console.log("Payment Success",response)
-            const verifypay =await axios.post(`${ServerURL}/api/payment/verify`,
-              response, {withCredentials:true})
-              dispatch(setUserData(verifypay.data.user))
-              alert("Payment Successful Credits Added!");
-              navigate("/")
-          },
-          theme:{
-            color:"#10b981",
+        handler: async function (response) {
+          console.log("Payment Success", response)
+          const token = localStorage.getItem("token")
+          const verifypay = await axios.post(`${ServerURL}/api/payment/verify`,
+            response,
+            { headers: { Authorization: `Bearer ${token}` } })
+          dispatch(setUserData(verifypay.data.user))
+          alert("Payment Successful Credits Added!");
+          navigate("/")
+        },
+        theme: {
+          color: "#10b981",
 
-          },
-        }
+        },
+      }
 
-        const rzp = new window.Razorpay(options)
-        rzp.open()
+      const rzp = new window.Razorpay(options)
+      rzp.open()
 
-        setLoadingPlan(null);
+      setLoadingPlan(null);
 
-    }catch(error){
+    } catch (error) {
       console.log(error)
       setLoadingPlan(null)
-      
+
     }
 
   }
@@ -211,26 +212,27 @@ function Pricing() {
 
 
               {!plan.default &&
-              <button
-              disabled = {loadingPLan === plan.id}
-                onClick={(e)=>{e.stopPropagation();
-                  if(!isSelected){
-                    setSelectedPlan(plan.id)
-                  }else{
-                    handelPayment(plan)
-                  }
-                  }}className={`w-full mt-8 py-3 rounded-xl font-semibold transition
+                <button
+                 disabled={loadingPlan === plan.id }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isSelected) {
+                      setSelectedPlan(plan.id)
+                    } else {
+                      handelPayment(plan)
+                    }
+                  }} className={`w-full mt-8 py-3 rounded-xl font-semibold transition
                  ${isSelected
-                    ? "bg-emerald-600 text-white hover:opacity-90"
-                    : "bg-gray-300 text-gray-800 hover:bg-emerald-50ss"
-                  }`}>
+                      ? "bg-emerald-600 text-white hover:opacity-90"
+                      : "bg-gray-300 text-gray-800 hover:bg-emerald-50ss"
+                    }`}>
 
-                    {loadingPLan === plan.id
+                  { loadingPlan === plan.id }
 
                     ? "Processing..."
                     : isSelected
-                    ? "Proceed to Pay" 
-                     : "Select Plan" }
+                      ? "Proceed to Pay"
+                      : "Select Plan"}
 
                 </button>
               }

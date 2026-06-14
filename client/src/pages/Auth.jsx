@@ -28,13 +28,18 @@ function Auth({ isModel = false }) {
       const result = await axios.post(`${ServerURL}/api/auth/google`, {
         name,
         email
-      }, { withCredentials: true })
-      dispatch(setUserData(result.data))
+      })
+
+      localStorage.setItem("token", result.data.token)
+
+      dispatch(setUserData(result.data.user))
+
+
 
       console.log("Server Response:", result.data);
 
-// GET FIREBASE TOKEN
- // REDIRECT
+      // GET FIREBASE TOKEN
+      // REDIRECT
       window.location.href = "/home";
 
 
@@ -102,14 +107,12 @@ function Auth({ isModel = false }) {
 
       console.log("Login Result:", result.data);
 
-      dispatch(setUserData(result.data));
+      localStorage.setItem("token", result.data.token)
+
+      dispatch(setUserData(result.data.user));
 
       alert("Login Successful!");
-
-      localStorage.setItem("name", result.data.name);
-      localStorage.setItem("email", result.data.email);
-      localStorage.setItem("credits", result.data.credits);
-
+      
       navigate("/home");
 
     } catch (error) {
