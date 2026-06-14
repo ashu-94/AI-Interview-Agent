@@ -94,7 +94,7 @@ function Step1SetUp({ onStart }) {
       formData.append("resume", uploadedFile);
 
       const response = await axios.post(
-         ServerURL +"/api/interview/resume",
+          `${ServerURL}/api/interview/resume`,
         formData,
         {
           headers: {
@@ -145,7 +145,7 @@ function Step1SetUp({ onStart }) {
     try {
       setLoading(true)
 
-      const result = await axios.post("http://localhost:8000/api/interview/generate-questions",
+      const result = await axios.post(` `${ServerURL}/api/interview/generate-questions``,
         {
           role: selectedRole,
           experience: selectedExperience,

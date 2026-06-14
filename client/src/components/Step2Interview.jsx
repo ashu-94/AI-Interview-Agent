@@ -329,7 +329,7 @@ recognition.onerror = (event) => {
 
     try {
       const result = await axios.post(
-         ServerURL +"/api/interview/submitAnswer",
+          `${ServerURL}/api/interview/submitAnswer`,
         {
           interviewId,
           questionIndex: currentIndex,
@@ -377,7 +377,7 @@ recognition.onerror = (event) => {
     setIsMicOn(false);
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/interview/finish",
+         `${ServerURL}/api/interview/finish`,
         { interviewId },
         { withCredentials: true }
       );
