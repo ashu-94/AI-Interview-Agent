@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from "./pages/Home";
+import Home from "./pages/Home"
 import Auth from './pages/Auth'
-import { useEffect } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setUserData } from "./redux/userSlice"
-import InterviewPage from "./pages/InterviewPage";
+import InterviewPage from "./pages/InterviewPage"
 import InterviewHistory from './pages/InterviewHistory'
 import Pricing from './pages/Pricing'
 import InterviewReport from './pages/InterviewReport'
@@ -16,37 +15,33 @@ export const ServerURL = import.meta.env.VITE_SERVER_URL
 function App() {
 
   const dispatch = useDispatch()
+
   useEffect(() => {
+
     const getUser = async () => {
       try {
-        const response = await axios.get(
-          ServerURL + "/api/user/current-user",
-          { withCredentials: true }
-        );
 
-        dispatch(setUserData(response.data.user));
-      } catch (error) {
-        dispatch(setUserData(null));
-      }
-    };
-
-    getUser();
-    const getUser = async () => {
-      try {
         const response = await axios.get(
-          ServerURL + "/api/user/current-user",
-          { withCredentials: true })
+          `${ServerURL}/api/user/current-user`,
+          {
+            withCredentials: true
+          }
+        )
+
         dispatch(setUserData(response.data.user))
+
       } catch (error) {
+
         console.error("Error fetching user data:", error)
-        console.error("Error during authentication check:", error)
-        localStorage.removeItem("token")
+
         dispatch(setUserData(null))
       }
-
     }
+
     getUser()
+
   }, [dispatch])
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -61,5 +56,3 @@ function App() {
 }
 
 export default App
-
-
