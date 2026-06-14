@@ -38,8 +38,7 @@ function Auth({ isModel = false }) {
 
       console.log("TOKEN:", token);
 
-      // SAVE TOKEN
-      localStorage.setItem("token", token);
+    
 
       // OPTIONAL USER DATA
       localStorage.setItem("name", name);

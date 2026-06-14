@@ -4,31 +4,31 @@ import bcrypt from "bcryptjs";
 
 // Register
 
-export const register = async (req,res) => {
-   try{
-      const {name,email,password} = req.body;
+export const register = async (req, res) => {
+   try {
+      const { name, email, password } = req.body;
 
-      const exists = await User.findOne({email});
+      const exists = await User.findOne({ email });
 
-      if(exists){
+      if (exists) {
          return res.status(400).json({
-            message:"User already exists"
+            message: "User already exists"
          });
       }
 
-      const hashedPassword = await bcrypt.hash(password,10);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await User.create({
          name,
          email,
-         password:hashedPassword
+         password: hashedPassword
       });
 
       res.status(201).json(user);
 
-   }catch(error){
+   } catch (error) {
       res.status(500).json({
-         message:error.message
+         message: error.message
       });
    }
 }
@@ -36,15 +36,15 @@ export const register = async (req,res) => {
 
 // Login
 
-export const login = async (req,res) => {
-   try{
-      const {email,password} = req.body;
+export const login = async (req, res) => {
+   try {
+      const { email, password } = req.body;
 
-      const user = await User.findOne({email});
+      const user = await User.findOne({ email });
 
-      if(!user){
+      if (!user) {
          return res.status(400).json({
-            message:"User not found"
+            message: "User not found"
          });
       }
 
@@ -53,70 +53,74 @@ export const login = async (req,res) => {
          user.password
       );
 
-      if(!isMatch){
+      if (!isMatch) {
          return res.status(400).json({
-            message:"Invalid password"
+            message: "Invalid password"
          });
       }
 
       const token = await genToken(user._id);
 
       console.log("LOGIN REACHED");
-console.log("TOKEN GENERATED:", token);
+      console.log("TOKEN GENERATED:", token);
 
-      res.cookie("token",token,{
-         httpOnly:true,
-         secure:true,
-         sameSite:"none",
-         maxAge:7*24*60*60*1000
+      res.cookie("token", token, {
+         httpOnly: true,
+         secure: true,
+         sameSite: "none",
+         maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
       console.log("COOKIE SET");
 
       res.status(200).json(user);
 
-   }catch(error){
+   } catch (error) {
       res.status(500).json({
-         message:error.message
+         message: error.message
       });
    }
 }
 
 // Goggle Login
-export const googleAuth = async (req,res) => {
-    try {
-        const {name , email} = req.body
-        let user = await User.findOne({email})
-        if(!user){
-            user = await User.create({
-                name , 
-                email
-            })
-        }
-        let token = await genToken(user._id)
-        res.cookie("token" , token , {
-            httpOnly:true,
-            secure:true,
-            sameSite:"none",
-            maxAge:7 * 24 * 60 * 60 * 1000
-        })
+export const googleAuth = async (req, res) => {
+   try {
+      const { name, email } = req.body
+      let user = await User.findOne({ email })
+      if (!user) {
+         user = await User.create({
+            name,
+            email
+         })
+      }
+      let token = await genToken(user._id)
+      res.cookie("token", token, {
+         httpOnly: true,
+         secure: true,
+         sameSite: "none",
+         maxAge: 7 * 24 * 60 * 60 * 1000
+      })
 
-        return res.status(200).json(user)
+      return res.status(200).json(user)
 
 
 
-    } catch (error) {
-        return res.status(500).json({message:`Google auth error ${error}`})
-    }
-    
+   } catch (error) {
+      return res.status(500).json({ message: `Google auth error ${error}` })
+   }
+
 }
 
-export const logout = async (req,res) => {
-    try {
-        await res.clearCookie("token")
-        return res.status(200).json({message:"LogOut Successfully"})
-    } catch (error) {
-         return res.status(500).json({message:`Logout error ${error}`})
-    }
-    
+export const logout = async (req, res) => {
+   try {
+      await res.clearCookie("token", {
+         httpOnly: true,
+         secure: true,
+         sameSite: "none",
+      });
+      return res.status(200).json({ message: "LogOut Successfully" })
+   } catch (error) {
+      return res.status(500).json({ message: `Logout error ${error}` })
+   }
+
 }

@@ -16,43 +16,50 @@ export const ServerURL = import.meta.env.VITE_SERVER_URL
 function App() {
 
   const dispatch = useDispatch()
-  useEffect(() =>{
-    const token = localStorage.getItem("token")
-    if(!token){
-      // If no token is found, you might want to redirect the user to the login page
-      // window.location.href = "/auth"
-      dispatch(setUserData(null))
-      return
-    }
-    const getUser = async()=>{
-      try{
+  useEffect(() => {
+    const getUser = async () => {
+      try {
         const response = await axios.get(
-          ServerURL + "/api/user/current-user", 
-          { withCredentials:true})
-          dispatch(setUserData(response.data.user))
-        } catch (error) {
+          ServerURL + "/api/user/current-user",
+          { withCredentials: true }
+        );
+
+        dispatch(setUserData(response.data.user));
+      } catch (error) {
+        dispatch(setUserData(null));
+      }
+    };
+
+    getUser();
+    const getUser = async () => {
+      try {
+        const response = await axios.get(
+          ServerURL + "/api/user/current-user",
+          { withCredentials: true })
+        dispatch(setUserData(response.data.user))
+      } catch (error) {
         console.error("Error fetching user data:", error)
         console.error("Error during authentication check:", error)
         localStorage.removeItem("token")
         dispatch(setUserData(null))
+      }
+
     }
-      
-  }
-  getUser()
-}, [dispatch])
-    return (
+    getUser()
+  }, [dispatch])
+  return (
     <Routes>
-      <Route path="/" element={<Home />}/>
-      <Route path="/home" element={<Home />}/>
-      <Route path="/auth" element={<Auth />}/>
-      <Route path="/interview" element={<InterviewPage/>}/>
-      <Route path="/history" element={<InterviewHistory/>}/>
-      <Route path="/pricing" element={<Pricing/>}/>
-      <Route path="/report/:id" element={<InterviewReport/>}/>
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/interview" element={<InterviewPage />} />
+      <Route path="/history" element={<InterviewHistory />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/report/:id" element={<InterviewReport />} />
     </Routes>
   )
 }
 
 export default App
-  
-    
+
+
