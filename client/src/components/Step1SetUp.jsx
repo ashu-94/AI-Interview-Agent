@@ -145,7 +145,7 @@ function Step1SetUp({ onStart }) {
     try {
       setLoading(true)
 
-      const result = await axios.post(` `${ServerURL}/api/interview/generate-questions``,
+      const result = await axios.post( `${ServerURL}/api/interview/generate-questions`,
         {
           role: selectedRole,
           experience: selectedExperience,
