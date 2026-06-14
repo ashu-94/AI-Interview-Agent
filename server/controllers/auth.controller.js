@@ -61,12 +61,17 @@ export const login = async (req,res) => {
 
       const token = await genToken(user._id);
 
+      console.log("LOGIN REACHED");
+console.log("TOKEN GENERATED:", token);
+
       res.cookie("token",token,{
          httpOnly:true,
          secure:true,
          sameSite:"none",
          maxAge:7*24*60*60*1000
       });
+
+      console.log("COOKIE SET");
 
       res.status(200).json(user);
 
