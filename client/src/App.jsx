@@ -22,7 +22,7 @@ function App() {
       try {
 
         const response = await axios.get(
-          `${ServerURL}/api/user/current-user`,
+          ServerURL + "/api/user/current-user",
           {
             withCredentials: true
           }

@@ -29,22 +29,12 @@ function Auth({ isModel = false }) {
         name,
         email
       }, { withCredentials: true })
-      dispatch(setUserData(result.data.user))
+      dispatch(setUserData(result.data))
 
       console.log("Server Response:", result.data);
 
 // GET FIREBASE TOKEN
-      const token = await User.getIdToken();
-
-      console.log("TOKEN:", token);
-
-    
-
-      // OPTIONAL USER DATA
-      localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
-
-      // REDIRECT
+ // REDIRECT
       window.location.href = "/home";
 
 
