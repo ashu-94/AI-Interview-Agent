@@ -227,7 +227,7 @@ function Pricing() {
                       : "bg-gray-300 text-gray-800 hover:bg-emerald-50ss"
                     }`}>
 
-                  { loadingPlan === plan.id }
+                  { loadingPlan === plan.id 
 
                     ? "Processing..."
                     : isSelected
