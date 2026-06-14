@@ -5,6 +5,7 @@ import femaleVideo from "../assets/videos/female-ai.mp4"
 import { motion, AnimatePresence } from "framer-motion"
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa"
 import axios from "axios"
+import { ServerURL } from "../App";
 import { BsArrowRight } from 'react-icons/bs';
 
 function Step2Interview({ interviewData, onFinish }) {
@@ -328,7 +329,7 @@ recognition.onerror = (event) => {
 
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/interview/submitAnswer",
+         ServerURL +"/api/interview/submitAnswer",
         {
           interviewId,
           questionIndex: currentIndex,

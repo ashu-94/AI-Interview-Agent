@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { FaCheckCircle } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../redux/userSlice'
+import { ServerURL } from "../App";
 
 function Pricing() {
   const navigate = useNavigate()
@@ -71,7 +72,7 @@ function Pricing() {
       plan.id === "basic" ? 100:
       plan.id === "pro" ? 500: 0;
 
-      const result = await axios.post( "http://localhost:8000/api/payment/order" ,
+      const result = await axios.post(`${ServerURL}/api/payment/order` ,
         {
         planId : plan.id,
         amount: amount,
@@ -94,7 +95,7 @@ function Pricing() {
 
           handler : async function (response) {
             console.log("Payment Success",response)
-            const verifypay =await axios.post("http://localhost:8000/api/payment/verify",
+            const verifypay =await axios.post(`${ServerURL}/api/payment/verify`,
               response, {withCredentials:true})
               dispatch(setUserData(verifypay.data.user))
               alert("Payment Successful Credits Added!");

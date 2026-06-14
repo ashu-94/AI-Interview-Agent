@@ -2,6 +2,7 @@ import React, {use, useEffect,useState} from 'react'
 import axios from  "axios"
 import { useParams } from 'react-router-dom'
 import Step3Report from '../components/Step3Report';
+import { ServerURL } from "../App";
 
 function InterviewReport() {
 
@@ -13,7 +14,7 @@ function InterviewReport() {
       try{
 
         const result = await axios.get(
-          "http://localhost:8000/api/interview/report/" + id,
+           `${ServerURL}/api/interview/report/${id}`, 
           { withCredentials: true })
 
           console.log(result.data)

@@ -22,6 +22,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "AI Interview Agent API Running"
+  });
+});
 app.use(express.json())
 app.use(cookieParser())
 

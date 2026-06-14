@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import { ServerURL } from "../App";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
@@ -93,7 +94,7 @@ function Step1SetUp({ onStart }) {
       formData.append("resume", uploadedFile);
 
       const response = await axios.post(
-        "http://localhost:8000/api/interview/resume",
+         ServerURL +"/api/interview/resume",
         formData,
         {
           headers: {
